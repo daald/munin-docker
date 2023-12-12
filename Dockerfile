@@ -12,7 +12,9 @@ RUN set -x \
  && go get -d . \
  && go build muninhttpd.go
 
-FROM alpine:latest
+FROM alpine:3.17
+# 3.18 munin is not working (dependency to munin-node, and wrong paths in generated html pages)
+# 3.18 needs these extra deps: perl-log-log4perl munin-node perl-cgi-fast
 
 MAINTAINER Daniel Alder <daald@users.noreply.github.com>
 
@@ -21,7 +23,12 @@ RUN apk add --no-cache \
 	munin \
 	dumb-init \
 	tzdata \
+	spawn-fcgi \
+	perl-cgi-fast \
 	;
+# the last block of packages should not be here (wasn't needed with older version of alpine)
+
+
 #RUN apk add --no-cache \
 #  coreutils \
 #  dumb-init \
@@ -53,6 +60,13 @@ RUN adduser --system httpd
 ADD updater /opt/updater
 #RUN groupadd -g 2002 munin && useradd -m -u 2002 -g munin munin
 #RUN adduser --system munin
+RUN chown munin.munin /usr/share/webapps/munin/html
+
+RUN set -ex \
+  ; echo verification \
+  ; id -u munin \
+  ; id -u httpd \
+  ;
 
 # Expose nginx
 EXPOSE 8080
