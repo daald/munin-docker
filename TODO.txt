@@ -1,6 +1,8 @@
 TODO next:
 
-munin-server_1  | [httpd] Fontconfig error: No writable cache directories
+ * munin-server_1  | [httpd] Fontconfig error: No writable cache directories
+ * if only restart, container fails on mkdir
+ * permission fixes on 2-3 locations
 
 
 
