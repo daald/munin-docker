@@ -1,0 +1,14 @@
+TODO next:
+
+munin-server_1  | [httpd] Fontconfig error: No writable cache directories
+
+
+
+
+
+test:
+
+http://localhost:8080/munin-cgi/munin-cgi-graph/samplenode/samplenode/diskstats_iops-day.png
+http://localhost:8080/munin/samplenode/samplenode/diskstats_iops-day.png
+http://localhost:8080/munin/
+http://localhost:8080/
