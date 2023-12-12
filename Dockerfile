@@ -85,6 +85,8 @@ COPY --from=alpinegcc /opt/minicron /opt/updater/
 RUN chown munin.munin /usr/share/webapps/munin/html
 
 RUN set -ex \
+  ; chmod a+rx /opt/*/*.sh \
+  ; chmod a+rX -R /opt/*/ \
   ; echo verification \
   ; id -u munin \
   ; id -u httpd \

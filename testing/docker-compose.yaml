@@ -2,13 +2,15 @@
 
 services:
   munin-server:
-    build: ./
+    build: ../
     #container_name: es
     #environment:
     #  discovery.type: single-node
     #  ES_JAVA_OPTS: "-Xms512m -Xmx512m"
     ports:
       - "8080:8080"
+    volumes:
+      - "./muninconf.d/:/etc/munin/munin-conf.d:ro"
     #healthcheck:
     #  test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
     #  interval: 10s
