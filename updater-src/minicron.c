@@ -11,9 +11,9 @@ void runUpdate() {
 
 	int returnCode = system("/usr/bin/munin-cron");
 	if (returnCode != 0) {
-		printf("update returned with exit code %d\n", returnCode);
+		printf(" - update returned with exit code %d\n", returnCode);
 	} else {
-		printf("update done\n");
+		printf(" - update done\n");
 	}
 }
 
