@@ -7,11 +7,10 @@ import (
 	"log"
 //	"fmt"
 	"net/http"
-    "os/exec"
+	"net/http/cgi"
+//	"os/exec"
 //	"os"
-	"context"
-
-	"github.com/yookoala/gofast"
+//	"context"
 )
 
 
@@ -44,28 +43,35 @@ import (
 
 // next thing to try: https://pkg.go.dev/net/http/cgi
 
-func SetPathInfo(next http.Handler) http.Handler {
+func CgiHandler(cgiPath string, notused string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Add your additional parameter to the request context
 		pathInfo := r.URL.Path
-		ctx := context.WithValue(r.Context(), "PATH_INFO", pathInfo)
-		log.Output(1, "P:" + pathInfo)
-
-		// Create a new request with the updated context
-		r = r.WithContext(ctx)
+		log.Output(1, cgiPath + " >> " + pathInfo)
 
 		// Call the next handler in the chain
-		next.ServeHTTP(w, r)
+		handler := cgi.Handler{Path: cgiPath}
+		handler.Env = append(handler.Env, "PATH_INFO" + pathInfo)
+		handler.ServeHTTP(w, r)
 	})
 }
 
+
+/*
+		CgiHandler("/usr/share/webapps/munin/cgi/munin-cgi-graph", "/munin-cgi/munin-cgi-graph")))
+*/
+/*
+func CgiHandler(w http.ResponseWriter, r *http.Request) {
+	handler := cgi.Handler{Path: "/usr/share/webapps/munin/cgi/munin-cgi-html"}
+	handler.ServeHTTP(w, r)
+}*/
 
 
 // spawn-fcgi -s /var/run/munin/fastcgi-graph.sock -U nginx -u munin -g munin -- /usr/share/webapps/munin/cgi/munin-cgi-graph
 // spawn-fcgi -s /var/run/munin/fastcgi-html.sock -U nginx -u munin -g munin -- /usr/share/webapps/munin/cgi/munin-cgi-html
 
 
-func SpawnProcess(prefix string, h http.Handler) http.Handler {
+/*func SpawnProcess(prefix string, h http.Handler) http.Handler {
 	cgistarted := true //T
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if (!cgistarted) {
@@ -78,7 +84,7 @@ func SpawnProcess(prefix string, h http.Handler) http.Handler {
 		}
 		h.ServeHTTP(w, r)
 	})
-}
+}*/
 
 func main() {
 	// Get fastcgi application server tcp address
@@ -101,11 +107,10 @@ func main() {
     //    fastcgi_pass unix:/var/run/munin/fastcgi-graph.sock;
     //    include fastcgi_params;
     //}
-	connFactory1 := gofast.SimpleConnFactory("unix", "/var/run/munin/fastcgi-graph.sock")
-	http.Handle("/munin-cgi/munin-cgi-graph/", http.StripPrefix("/munin-cgi/munin-cgi-graph", SetPathInfo(gofast.NewHandler(
+/*	http.HandleFunc("/munin-cgi/munin-cgi-graph/", http.StripPrefix("/munin-cgi/munin-cgi-graph", SetPathInfo(gofast.NewHandler(
 		gofast.NewFileEndpoint("/var/www/html")(gofast.BasicSession),
 		gofast.SimpleClientFactory(connFactory1),
-	))))
+	))))*/
     //location /munin/ {
     //    fastcgi_split_path_info ^(/munin)(.*);
     //    fastcgi_param PATH_INFO $fastcgi_path_info;
@@ -116,11 +121,16 @@ func main() {
 
 
 
-	connFactory2 := gofast.SimpleConnFactory("unix", "/var/run/munin/fastcgi-html.sock")
-	http.Handle("/munin/", http.StripPrefix("/munin", SetPathInfo(gofast.NewHandler(
+	http.Handle("/munin-cgi/munin-cgi-graph/",
+		http.StripPrefix("/munin-cgi/munin-cgi-graph",
+		CgiHandler("/usr/share/webapps/munin/cgi/munin-cgi-graph", "/munin-cgi/munin-cgi-graph")))
+	http.Handle("/munin/",
+		http.StripPrefix("/munin",
+		CgiHandler("/usr/share/webapps/munin/cgi/munin-cgi-html", "/munin")))
+/*http.StripPrefix("/munin", SetPathInfo(gofast.NewHandler(
 		gofast.NewFileEndpoint("/var/www/html")(gofast.BasicSession),
 		gofast.SimpleClientFactory(connFactory2),
-	))))
+	))))*/
 
 	// serve at 8080 port
 	log.Fatal(http.ListenAndServe(":8080", nil))
