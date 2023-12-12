@@ -42,10 +42,12 @@ import (
 }*/
 
 
+// next thing to try: https://pkg.go.dev/net/http/cgi
+
 func SetPathInfo(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Add your additional parameter to the request context
-		pathInfo := "/" + r.URL.Path
+		pathInfo := r.URL.Path
 		ctx := context.WithValue(r.Context(), "PATH_INFO", pathInfo)
 		log.Output(1, "P:" + pathInfo)
 
@@ -100,7 +102,7 @@ func main() {
     //    include fastcgi_params;
     //}
 	connFactory1 := gofast.SimpleConnFactory("unix", "/var/run/munin/fastcgi-graph.sock")
-	http.Handle("/munin-cgi/munin-cgi-graph/", http.StripPrefix("/munin-cgi/munin-cgi-graph/", SetPathInfo(gofast.NewHandler(
+	http.Handle("/munin-cgi/munin-cgi-graph/", http.StripPrefix("/munin-cgi/munin-cgi-graph", SetPathInfo(gofast.NewHandler(
 		gofast.NewFileEndpoint("/var/www/html")(gofast.BasicSession),
 		gofast.SimpleClientFactory(connFactory1),
 	))))
@@ -115,7 +117,7 @@ func main() {
 
 
 	connFactory2 := gofast.SimpleConnFactory("unix", "/var/run/munin/fastcgi-html.sock")
-	http.Handle("/munin/", http.StripPrefix("/munin/", SetPathInfo(gofast.NewHandler(
+	http.Handle("/munin/", http.StripPrefix("/munin", SetPathInfo(gofast.NewHandler(
 		gofast.NewFileEndpoint("/var/www/html")(gofast.BasicSession),
 		gofast.SimpleClientFactory(connFactory2),
 	))))
