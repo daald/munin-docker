@@ -25,6 +25,7 @@ RUN apk add --no-cache \
 	tzdata \
 	spawn-fcgi \
 	perl-cgi-fast \
+	ttf-opensans \
 	;
 # the last block of packages should not be here (wasn't needed with older version of alpine)
 

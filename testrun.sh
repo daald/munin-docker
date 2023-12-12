@@ -1,9 +1,10 @@
 #!/bin/sh
+# intended for testing
 
 
-# http://localhost:8080/munin/static/
+# http://localhost:8080/munin/
 
-docker-compose up --build
+exec docker-compose up --build
 
 exit $?
 

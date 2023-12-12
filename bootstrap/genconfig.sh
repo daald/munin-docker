@@ -3,6 +3,7 @@
 cat >/etc/munin/munin.conf <<.e
 includedir /etc/munin/munin-conf.d
 html_strategy cgi
+graph_strategy cgi
 timeout_fetch_all_nodes 240
 timeout_fetch_one_node 180
 [samplenode]
