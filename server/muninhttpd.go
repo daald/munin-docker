@@ -15,7 +15,7 @@ func CgiHandler(cgiPath string) http.Handler {
 		// Call the next handler in the chain
 		handler := cgi.Handler{Path: cgiPath}
 		handler.Env = append(handler.Env, "PATH_INFO=" + pathInfo)
-		handler.Env = append(handler.Env, "HOME=/a")
+		handler.Env = append(handler.Env, "HOME=/home/httpd")
 		handler.ServeHTTP(w, r)
 	})
 }
