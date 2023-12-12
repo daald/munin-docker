@@ -12,3 +12,45 @@ http://localhost:8080/munin-cgi/munin-cgi-graph/samplenode/samplenode/diskstats_
 http://localhost:8080/munin/samplenode/samplenode/diskstats_iops-day.png
 http://localhost:8080/munin/
 http://localhost:8080/
+
+
+
+-----------
+
+
+
+PREVIOUS PROBLEMS
+
+ingdiacriticalmarkssupplementblock=supplementalmathematicaloperatorsattachedaboverightisunifiedcanadianaboriginalsyllabicsextendeda
+^C
+84eaa72970cc:/# grep -r libdir /usr/share/perl5/vendor_perl/Munin
+/usr/share/perl5/vendor_perl/Munin/Master/GraphOld.pm:my $libdir         = $Munin::Common::Defaults::MUNIN_LIBDIR;
+/usr/share/perl5/vendor_perl/Munin/Master/GraphOld.pm:		'--font', "LEGEND:7:$libdir/DejaVuSansMono.ttf",
+/usr/share/perl5/vendor_perl/Munin/Master/GraphOld.pm:		'--font', "UNIT:7:$libdir/DejaVuSans.ttf",
+/usr/share/perl5/vendor_perl/Munin/Master/GraphOld.pm:		'--font', "AXIS:7:$libdir/DejaVuSans.ttf",
+/usr/share/perl5/vendor_perl/Munin/Node/Configure/PluginList.pm:    my $libdir     = delete $opts{libdir}     or die "Must specify the directory\n";
+/usr/share/perl5/vendor_perl/Munin/Node/Configure/PluginList.pm:    my $library  = Munin::Node::Service->new(servicedir => $libdir);
+/usr/share/perl5/vendor_perl/Munin/Node/Configure/PluginList.pm:        libdir     => $libdir,
+/usr/share/perl5/vendor_perl/Munin/Node/Configure/PluginList.pm:        history_file => "$self->{libdir}/plugins.history",
+/usr/share/perl5/vendor_perl/Munin/Node/Configure/PluginList.pm:    DEBUG("Searching '$self->{libdir}' for available plugins.");
+/usr/share/perl5/vendor_perl/Munin/Node/Configure/PluginList.pm:        next unless ($realfile =~ /^$self->{libdir}\//);
+/usr/share/perl5/vendor_perl/Munin/Node/Configure/PluginList.pm:        libdir     => '/usr/share/munin/plugins/',
+/usr/share/perl5/vendor_perl/Munin/Node/Configure/PluginList.pm:Required arguments are 'libdir' and 'servicedir', which are the plugin library
+/usr/share/perl5/vendor_perl/Munin/Node/Configure/PluginList.pm:Finds all the plugins in 'libdir' that are in any of @families, and any
+84eaa72970cc:/# ls /usr/share/munin/plugins
+ls: /usr/share/munin/plugins: No such file or directory
+84eaa72970cc:/# ls /usr/share/munin/
+ls: /usr/share/munin/: No such file or directory
+84eaa72970cc:/# ^C
+84eaa72970cc:/# find /usr/ -name *.ttf
+/usr/lib/munin/DejaVuSans.ttf
+/usr/lib/munin/DejaVuSansMono.ttf
+84eaa72970cc:/# 
+
+
+      env.MUNIN_LIBDIR /usr/share/munin
+
+
+su - httpd -s /bin/bash
+  CGI_DEBUG=yes PATH_INFO=/samplenode/samplenode/df_inode-month.png /usr/share/webapps/munin/cgi/munin-cgi-graph
+    less /var/log/munin/munin-cgi-graph.log 
