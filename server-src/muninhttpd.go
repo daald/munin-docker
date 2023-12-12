@@ -10,7 +10,7 @@ func CgiHandler(cgiPath string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Add your additional parameter to the request context
 		pathInfo := r.URL.Path
-		//log.Output(1, cgiPath + " >> " + pathInfo)
+		//log.Trace(cgiPath + " >> " + pathInfo)
 
 		// Call the next handler in the chain
 		handler := cgi.Handler{Path: cgiPath}

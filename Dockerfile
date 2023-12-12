@@ -1,6 +1,6 @@
 FROM golang:alpine AS golangcompile
 
-ADD server/muninhttpd.go /opt
+ADD server-src/ /opt/
 
 # go mod init daald/miniwebfcgi && go mod tidy && cat go.mod
 
@@ -22,7 +22,7 @@ RUN apk add --no-cache \
 	make \
 	;
 
-ADD updater/minicron.c updater/Makefile /opt/
+ADD updater-src /opt/
 
 RUN set -x \
  && cd /opt/ \
