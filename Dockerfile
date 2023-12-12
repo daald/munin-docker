@@ -1,4 +1,4 @@
-FROM golang:alpine AS compile
+FROM golang:alpine AS golangcompile
 
 ADD server/muninhttpd.go /opt
 
@@ -11,6 +11,24 @@ RUN set -x \
  && echo "require github.com/yookoala/gofast v0.7.0" >>go.mod \
  && go get -d . \
  && go build muninhttpd.go
+
+#===============================================================================
+
+FROM alpine:3.17 AS alpinegcc
+
+RUN apk add --no-cache \
+	gcc \
+	musl-dev \
+	make \
+	;
+
+ADD updater/minicron.c updater/Makefile /opt/
+
+RUN set -x \
+ && cd /opt/ \
+ && make
+
+#===============================================================================
 
 FROM alpine:3.17
 # 3.18 munin is not working (dependency to munin-node, and wrong paths in generated html pages)
@@ -53,12 +71,13 @@ ADD bootstrap /opt/bootstrap
 
 #---------
 ADD server /opt/server
-COPY --from=compile /opt/muninhttpd /opt/server/
+COPY --from=golangcompile /opt/muninhttpd /opt/server/
 #RUN groupadd -g 2001 httpd && useradd -m -u 2001 -g httpd httpd
 RUN adduser --system httpd
 
 #---------
 ADD updater /opt/updater
+COPY --from=alpinegcc /opt/minicron /opt/updater/
 #RUN groupadd -g 2002 munin && useradd -m -u 2002 -g munin munin
 #RUN adduser --system munin
 RUN chown munin.munin /usr/share/webapps/munin/html

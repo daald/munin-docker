@@ -10,7 +10,7 @@ func CgiHandler(cgiPath string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Add your additional parameter to the request context
 		pathInfo := r.URL.Path
-		log.Output(1, cgiPath + " >> " + pathInfo)
+		//log.Output(1, cgiPath + " >> " + pathInfo)
 
 		// Call the next handler in the chain
 		handler := cgi.Handler{Path: cgiPath}
@@ -36,6 +36,8 @@ func main() {
 	http.Handle("/munin-cgi/munin-cgi-graph/",
 		http.StripPrefix("/munin-cgi/munin-cgi-graph",
 			CgiHandler("/usr/share/webapps/munin/cgi/munin-cgi-graph")))
+
+	http.Handle("/", http.RedirectHandler("/munin/", http.StatusSeeOther))
 
 	// serve at 8080 port
 	log.Fatal(http.ListenAndServe(":8080", nil))
