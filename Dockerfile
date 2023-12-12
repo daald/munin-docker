@@ -10,7 +10,8 @@ RUN set -x \
  && echo "go 1.21.1" >>go.mod \
  && echo "require github.com/yookoala/gofast v0.7.0" >>go.mod \
  && go get -d . \
- && go build muninhttpd.go
+ && go build muninhttpd.go \
+ && test -x muninhttpd
 
 #===============================================================================
 
@@ -26,7 +27,8 @@ ADD updater-src /opt/
 
 RUN set -x \
  && cd /opt/ \
- && make
+ && make \
+ && test -x minicron
 
 #===============================================================================
 
