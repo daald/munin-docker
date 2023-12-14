@@ -49,6 +49,13 @@ RUN apk add --no-cache \
 	;
 # the last block of packages should not be here (wasn't needed with older version of alpine)
 
+ADD patch/unixsocket.patch /
+RUN apk add --no-cache patch \
+ && cd / \
+ && patch -Np1 <unixsocket.patch \
+ && rm unixsocket.patch \
+ && apk del patch
+
 RUN ln -v /usr/lib/munin/DejaVuSans* /usr/share/fonts/
 
 #RUN apk add --no-cache \
