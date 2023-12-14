@@ -1,0 +1,30 @@
+--- /usr/share/perl5/vendor_perl/Munin/Master/Node.pm_orig
++++ /usr/share/perl5/vendor_perl/Munin/Master/Node.pm
+@@ -94,6 +94,16 @@
+ 		ERROR "Failed to connect to node $self->{address}:$self->{port}/tcp : $!";
+ 		return 0;
+ 	}
++    } elsif ($uri->scheme eq "unix") {
++        $self->{reader} = $self->{writer} = IO::Socket::UNIX->new(
++		Type    => SOCK_STREAM(),
++		Peer    => $uri->path,
++		Timeout => $config->{timeout}
++	);
++	unless ($self->{reader} && defined $self->{reader}->connected()) {
++		ERROR "Failed to connect to unix socket ".$uri->path." : $!";
++		return 0;
++	}
+     } elsif ($uri->scheme eq "ssh") {
+ 	    my $ssh_command = sprintf("%s %s", $config->{ssh_command}, $config->{ssh_options});
+ 	    my $user_part = ($uri->user) ? ($uri->user . "@") : "";
+--- /usr/share/perl5/vendor_perl/Munin/Master/UpdateWorker.pm_orig
++++ /usr/share/perl5/vendor_perl/Munin/Master/UpdateWorker.pm
+@@ -65,7 +65,7 @@
+     $uri = new URI("munin://" . $url) unless $uri->scheme;
+ 
+     my $nodedesignation;
+-    if ($uri->scheme eq "ssh" || $uri->scheme eq "cmd") {
++    if ($uri->scheme eq "ssh" || $uri->scheme eq "cmd" || $uri->scheme eq "unix") {
+       $nodedesignation = $host." (".$self->{host}{address}.")";
+     }else{
+       $nodedesignation = $host." (".$self->{host}{address}.":".$self->{host}{port}.")";
