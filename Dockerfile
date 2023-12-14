@@ -45,6 +45,7 @@ RUN apk add --no-cache \
 	tzdata \
 	spawn-fcgi \
 	perl-cgi-fast \
+	tzdata \
 	;
 # the last block of packages should not be here (wasn't needed with older version of alpine)
 

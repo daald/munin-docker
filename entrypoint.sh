@@ -9,7 +9,7 @@ find /opt -exec ls -ld \{\} +
 /opt/bootstrap/bootstrap.sh
 
 runas() {
-  su - "$1" -s /bin/sh -c "$2"
+  su - "$1" -s /bin/sh -c "TZ=$TZ SMTPHOST=$SMTPHOST SMTPTO=$SMTPTO $2"
 }
 
 log() {

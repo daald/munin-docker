@@ -5,6 +5,8 @@ version: '3.4'
 services:
   munin-server:
     build: ../
+    environment:
+      TZ: Europe/Zurich
     ports:
       - "8080:8080"
     volumes:

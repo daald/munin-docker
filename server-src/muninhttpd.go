@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"log"
 	"net/http"
 	"net/http/cgi"
@@ -15,7 +16,8 @@ func CgiHandler(cgiPath string) http.Handler {
 		// Call the next handler in the chain
 		handler := cgi.Handler{Path: cgiPath}
 		handler.Env = append(handler.Env, "PATH_INFO=" + pathInfo)
-		handler.Env = append(handler.Env, "HOME=/home/httpd")
+		handler.Env = append(handler.Env, "HOME=" + os.Getenv("HOME"))
+		handler.Env = append(handler.Env, "TZ=" + os.Getenv("TZ"))
 		handler.ServeHTTP(w, r)
 	})
 }
