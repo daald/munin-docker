@@ -11,6 +11,7 @@ services:
       - "8080:8080"
     volumes:
       - "./muninconf.d/:/etc/munin/munin-conf.d:ro"
+      - "./data/var-lib-munin/:/var/lib/munin/"
   samplenode:
     image: dennistt/munin-node:latest
     stop_signal: SIGKILL
