@@ -9,7 +9,7 @@
 void runUpdate() {
 	printf("Running update\n");
 
-	int returnCode = system("/usr/bin/munin-cron");
+	int returnCode = system("/opt/updater/trigger-muninupdate.sh");
 	if (returnCode != 0) {
 		printf(" - update returned with exit code %d\n", returnCode);
 	} else {
